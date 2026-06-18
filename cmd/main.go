@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"go-conceptual/internal/config"
+	"go-conceptual/internal/server"
+)
 
 func main() {
-	fmt.Println("Hello World!")
+	env := config.LoadEnv()
+
+	db := config.ConnectToDB(env)
+
+	server.Start(env, db)
 }
