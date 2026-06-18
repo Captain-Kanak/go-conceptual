@@ -1,0 +1,7 @@
+1. echo
+2. gorm
+3. gorm pg driver
+4. go-playground validator
+5. godotenv
+6. golang-jwt
+7. 
