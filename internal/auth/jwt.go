@@ -1,0 +1,89 @@
+package auth
+
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+)
+
+const (
+	issuer        = "go-conceptual"
+	secretKey     = "Lvv7eD2lrI3tn4qlBOIWveCImwGB2PoUFIqZlOGvEztvMdYNLDq"
+	tokenDuration = 24 * time.Hour
+)
+
+type JWTClaims struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
+	jwt.RegisteredClaims
+}
+
+type JWTService interface {
+	GenerateToken(id uuid.UUID, name, email string) (string, error)
+	ValidateToken(token string) (*JWTClaims, error)
+}
+
+type jwtService struct {
+	secretKey     string
+	tokenDuration time.Duration
+}
+
+func NewJWTService(secret string, duration time.Duration) JWTService {
+	if secret == "" {
+		secret = secretKey
+	}
+
+	if duration == 0 {
+		duration = tokenDuration
+	}
+
+	return &jwtService{
+		secretKey:     secret,
+		tokenDuration: duration,
+	}
+}
+
+func (j *jwtService) GenerateToken(id uuid.UUID, name, email string) (string, error) {
+	claims := JWTClaims{
+		ID:    id,
+		Name:  name,
+		Email: email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    issuer,
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(j.tokenDuration)),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString([]byte(j.secretKey))
+
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
+}
+
+func (j *jwtService) ValidateToken(tokenString string) (*JWTClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(t *jwt.Token) (any, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, jwt.ErrSignatureInvalid
+		}
+
+		return []byte(j.secretKey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*JWTClaims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, jwt.ErrSignatureInvalid
+}

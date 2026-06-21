@@ -1,6 +1,7 @@
 package server
 
 import (
+	"go-conceptual/internal/domain/user"
 	"go-conceptual/internal/httpresponse"
 	"net/http"
 
@@ -9,11 +10,15 @@ import (
 )
 
 func RoutesHandler(e *echo.Echo, db *gorm.DB) {
+	db.AutoMigrate(user.User{})
+
+	// initial routes
 	e.GET("/", func(c *echo.Context) error {
-		return c.JSON(http.StatusOK, httpresponse.HTTPResponse{
+		return c.JSON(http.StatusOK, httpresponse.Response{
 			Success: true,
 			Message: "Server is Running Successfully!",
 		})
 	})
 
+	// user routes
 }
