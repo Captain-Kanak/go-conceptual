@@ -31,6 +31,7 @@ func (u *User) ToResponse() *dto.Response {
 		Phone:       u.Phone,
 		Address:     u.Address,
 		CreatedAt:   u.CreatedAt,
+		UpdatedAt:   u.UpdatedAt,
 	}
 }
 

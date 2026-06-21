@@ -1,12 +1,15 @@
 package user
 
 import (
+	"errors"
 	"fmt"
 	"go-conceptual/internal/domain/user/dto"
 	"go-conceptual/internal/httpresponse"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v5"
+	"gorm.io/gorm"
 )
 
 type handler struct {
@@ -86,6 +89,13 @@ func (h *handler) LoginUser(c *echo.Context) error {
 	if err != nil {
 		fmt.Println(err)
 
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusBadRequest, httpresponse.Response{
+				Success: false,
+				Message: "User not found!",
+			})
+		}
+
 		return c.JSON(http.StatusBadRequest, httpresponse.Response{
 			Success: false,
 			Message: "User login failed!",
@@ -119,5 +129,33 @@ func (h *handler) GetAllUsers(c *echo.Context) error {
 		Success: true,
 		Message: "Users fetched successfully!",
 		Data:    users,
+	})
+}
+
+func (h *handler) GetUserByID(c *echo.Context) error {
+	id := uuid.MustParse(c.Param("id"))
+
+	res, err := h.service.GetUserByID(id)
+
+	if err != nil {
+		fmt.Println(err)
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusBadRequest, httpresponse.Response{
+				Success: false,
+				Message: "User not found!",
+			})
+		}
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "User fetch failed!",
+		})
+	}
+
+	return c.JSON(http.StatusCreated, httpresponse.Response{
+		Success: true,
+		Message: "User fetched successfully!",
+		Data:    res,
 	})
 }

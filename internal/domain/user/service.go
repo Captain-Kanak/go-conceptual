@@ -3,6 +3,8 @@ package user
 import (
 	"go-conceptual/internal/auth"
 	"go-conceptual/internal/domain/user/dto"
+
+	"github.com/google/uuid"
 )
 
 type service struct {
@@ -66,4 +68,14 @@ func (s *service) GetAllUsers() ([]User, error) {
 	}
 
 	return users, nil
+}
+
+func (s *service) GetUserByID(id uuid.UUID) (*User, error) {
+	user, err := s.repo.GetByID(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
