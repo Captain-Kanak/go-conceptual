@@ -34,7 +34,7 @@ func (s *service) RegisterUser(req dto.CreateRequest) (*dto.Response, error) {
 }
 
 func (s *service) LoginUser(req dto.LoginRequest) (*dto.LoginResponse, error) {
-	user, err := s.repo.GetUserByEmail(req.Email)
+	user, err := s.repo.GetByEmail(req.Email)
 
 	if err != nil {
 		return nil, err
@@ -61,5 +61,9 @@ func (s *service) LoginUser(req dto.LoginRequest) (*dto.LoginResponse, error) {
 func (s *service) GetAllUsers() ([]User, error) {
 	users, err := s.repo.GetAll()
 
-	return users, err
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

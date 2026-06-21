@@ -6,7 +6,7 @@ import (
 )
 
 type Repository interface {
-	GetUserByEmail(email string) (*User, error)
+	GetByEmail(email string) (*User, error)
 	Create(u *User) error
 	GetAll() ([]User, error)
 	GetByID(id uuid.UUID) (User, error)
@@ -22,7 +22,7 @@ func NewRepository(db *gorm.DB) Repository {
 	return &repository{db}
 }
 
-func (repo *repository) GetUserByEmail(email string) (*User, error) {
+func (repo *repository) GetByEmail(email string) (*User, error) {
 	var user User
 
 	tx := repo.db.Where(&User{Email: email}).First(&user)

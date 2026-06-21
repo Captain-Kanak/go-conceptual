@@ -104,8 +104,20 @@ func (h *handler) LoginUser(c *echo.Context) error {
 }
 
 func (h *handler) GetAllUsers(c *echo.Context) error {
+	users, err := h.service.GetAllUsers()
+
+	if err != nil {
+		fmt.Println(err)
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Users fetch failed!",
+		})
+	}
+
 	return c.JSON(http.StatusCreated, httpresponse.Response{
 		Success: true,
 		Message: "Users fetched successfully!",
+		Data:    users,
 	})
 }
