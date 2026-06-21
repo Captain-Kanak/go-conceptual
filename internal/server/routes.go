@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func RoutesHandler(e *echo.Echo, db *gorm.DB) {
+func RoutesHandler(db *gorm.DB, e *echo.Echo) {
 	db.AutoMigrate(user.User{})
 
-	// initial routes
+	// health check
 	e.GET("/", func(c *echo.Context) error {
 		return c.JSON(http.StatusOK, httpresponse.Response{
 			Success: true,
@@ -21,4 +21,5 @@ func RoutesHandler(e *echo.Echo, db *gorm.DB) {
 	})
 
 	// user routes
+	user.Routes(db, e)
 }

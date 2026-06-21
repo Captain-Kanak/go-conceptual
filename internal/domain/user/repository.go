@@ -6,7 +6,7 @@ import (
 )
 
 type Repository interface {
-	Create(u User) error
+	Create(u *User) error
 	GetAll() ([]User, error)
 	GetByID(id uuid.UUID) (User, error)
 	// UpdateByID(id uuid.UUID, u User) error
@@ -21,8 +21,8 @@ func NewRepository(db *gorm.DB) Repository {
 	return &repository{db}
 }
 
-func (r *repository) Create(u User) error {
-	return r.db.Create(&u).Error
+func (r *repository) Create(u *User) error {
+	return r.db.Create(u).Error
 }
 
 func (r *repository) GetAll() ([]User, error) {
