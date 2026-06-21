@@ -12,26 +12,21 @@ func NewService(repo Repository) *service {
 
 func (s *service) RegisterUser(req dto.CreateRequest) (*dto.Response, error) {
 	user := &User{
-		Name:     req.Name,
-		Email:    req.Email,
-		Password: req.Password,
+		Name:  req.Name,
+		Email: req.Email,
+	}
+
+	err := user.hashPassword(req.Password)
+
+	if err != nil {
+		return nil, err
 	}
 
 	if err := s.repo.Create(user); err != nil {
 		return nil, err
 	}
 
-	res := &dto.Response{
-		ID:          user.ID,
-		Name:        user.Name,
-		Email:       user.Email,
-		DateOfBirth: user.DateOfBirth,
-		Phone:       user.Phone,
-		Address:     user.Address,
-		CreatedAt:   user.CreatedAt,
-	}
-
-	return res, nil
+	return user.ToResponse(), nil
 }
 
 func (s *service) GetAllUsers() ([]User, error) {
