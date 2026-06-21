@@ -15,7 +15,7 @@ type LoginRequest struct {
 
 type UpdateRequest struct {
 	Name        string    `json:"name"`
-	DateOfBirth time.Time `json:"date_of_birth"`
 	Phone       string    `json:"phone"`
 	Address     string    `json:"address"`
+	DateOfBirth time.Time `json:"date_of_birth"`
 }

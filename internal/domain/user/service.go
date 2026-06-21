@@ -79,3 +79,7 @@ func (s *service) GetUserByID(id uuid.UUID) (*User, error) {
 
 	return &user, nil
 }
+
+func (s *service) UpdateUserByID(id uuid.UUID, req dto.UpdateRequest) error {
+	return s.repo.UpdateByID(id, req)
+}

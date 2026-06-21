@@ -19,4 +19,5 @@ func Routes(db *gorm.DB, e *echo.Echo) {
 	api.POST("/auth/login", handler.LoginUser)
 	api.GET("/users", handler.GetAllUsers)
 	api.GET("/users/:id", handler.GetUserByID)
+	api.PATCH("/users/:id", handler.UpdateUserByID)
 }

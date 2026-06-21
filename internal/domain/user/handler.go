@@ -159,3 +159,42 @@ func (h *handler) GetUserByID(c *echo.Context) error {
 		Data:    res,
 	})
 }
+
+func (h *handler) UpdateUserByID(c *echo.Context) error {
+	id := uuid.MustParse(c.Param("id"))
+	var req dto.UpdateRequest
+
+	if err := c.Bind(&req); err != nil {
+		fmt.Println(err)
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Invalid request body",
+			Error:   err.Error(),
+		})
+	}
+
+	if err := c.Validate(&req); err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Validation failed!",
+			Error:   err.Error(),
+		})
+	}
+
+	if err := h.service.UpdateUserByID(id, req); err != nil {
+		fmt.Println(err)
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "User update failed!",
+		})
+	}
+
+	return c.JSON(http.StatusCreated, httpresponse.Response{
+		Success: true,
+		Message: "User updated successfully!",
+	})
+}
