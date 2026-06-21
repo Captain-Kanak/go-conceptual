@@ -81,9 +81,25 @@ func (h *handler) LoginUser(c *echo.Context) error {
 		})
 	}
 
+	res, err := h.service.LoginUser(req)
+
+	if err != nil {
+		fmt.Println(err)
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "User login failed!",
+		})
+	}
+
+	cookie := &http.Cookie{Name: "access_token", Value: res.Token}
+
+	c.SetCookie(cookie)
+
 	return c.JSON(http.StatusCreated, httpresponse.Response{
 		Success: true,
 		Message: "User logged in successfully!",
+		Data:    res,
 	})
 }
 

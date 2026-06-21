@@ -14,7 +14,7 @@ type User struct {
 	Name        string         `json:"name" gorm:"type:varchar(255);not null"`
 	Email       string         `json:"email" gorm:"type:varchar(255);unique;not null"`
 	Password    string         `json:"-" gorm:"type:varchar(255);not null"`
-	DateOfBirth time.Time      `json:"date_of_birth" gorm:"type:timestamp"`
+	DateOfBirth *time.Time     `json:"date_of_birth" gorm:"type:timestamp"`
 	Phone       string         `json:"phone" gorm:"type:varchar(20)"`
 	Address     string         `json:"address" gorm:"type:varchar(255)"`
 	CreatedAt   time.Time      `json:"created_at" gorm:"type:timestamp"`
